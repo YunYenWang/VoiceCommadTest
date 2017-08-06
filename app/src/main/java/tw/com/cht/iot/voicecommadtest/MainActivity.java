@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -161,23 +162,64 @@ public class MainActivity extends AppCompatActivity {
             client.controlLamp(true);
 
         } else if (first.contains("關")) { // TODO - NG
-            speak("燈關掉了 很酷吧", DONE);
+            speak("燈關掉了 有意思喔", DONE);
             client.controlLamp(false);
+
+        } else if (first.contains("空氣")) { // TODO - NG
+            try {
+                speak(client.pir(), DONE);
+
+            } catch (Exception e) {
+                LOG.error("error", e);
+            }
+
+        } else if (first.contains("歌")) {
+            speak("喔唉呀呀呀喔喔喔 愛的抱抱 然後你 K K 罷克斯 要記得繳錢才能聽啊", DONE);
+
+        } else if (first.contains("新聞")) {
+            speak("懶得查 就一堆三寶行車紀錄器 很無聊 沒什麼營養 多讀點書吧", DONE);
 
         } else if (first.contains("笑")) { // TODO - NG
             speak("跟你講一個笑話 從前有三隻毛毛蟲排成一列 然後就麻煩請您自己上網找這則笑話 謝謝你的惠顧", DONE);
 
-        } else if (first.contains("天")) { // TODO - NG
-            speak("今天天氣應該不錯 太陽從東邊升起 西邊落下", DONE);
+        } else if (first.contains("氣")) { // TODO - NG
+            try {
+                List<String> ws = client.weathers();
+                for (String w : ws) {
+                    String h = w.substring(0, 2);
 
-        } else if (first.contains("排")) {   // TODO - NG
-            speak("已經排好了 時候到了會通知您 會安排在你老婆不在家的時候", DONE);
+                    if (first.contains(h)) {
+                        speak(w, DONE);
+
+                        return;
+                    }
+                }
+
+            } catch (Exception e) {
+            }
+
+            speak("那裡天氣應該不錯 太陽從東邊升起 西邊落下 如果下雨 請記得帶傘", DONE);
+
+        } else if (first.contains("安排")) {   // TODO - NG
+            speak("已經排好了 時候到了會通知您 會安排在你老婆不在家的時候 天知地知你知我知 你老婆絕對不知 9 4 8 7 9 4 狂", DONE);
 
         } else if (first.contains("喜歡")) {   // TODO - NG
             speak("別這樣 我會害臊的 糾咪", DONE);
 
+        } else if (first.contains("電話")) {
+            speak("你電話費還沒有繳 打不出去啊", DONE);
+
+        } else if (first.contains("笨")) {
+            speak("我不笨 是你自己沒有慧根 好嗎", DONE);
+
+        } else if (first.contains("煮")) {
+            speak("你老婆沒有教我 你岳母也沒有教你老婆 乾脆我幫你訂餐廳外食好了", DONE);
+
+        } else if (first.contains("美女")) {
+            speak("謝謝你的讚美 我是永遠的二十歲啊", DONE);
+
         } else {
-            String[] errors = new String[] { "不好意思 沒聽懂 再講一次吧", "你口音怪怪的", "這個問題很難回答", "糟糕我幫不了你", "啥 聽不懂", "瞎咪挖溝 可以再說一次嗎", "我的老天鵝阿 你在說什麼" };
+            String[] errors = new String[] { "不好意思 沒聽懂 再講一次好嗎", "你口音怪怪的", "這個問題很難回答", "糟糕我幫不了你", "啥 人家聽不懂啦", "瞎咪挖溝 可以再說一次嗎", "我的老天鵝阿 你在說什麼" };
             int i = (int)(Math.random() * errors.length);
             speak(errors[i], LISTEN);
         }
