@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,5 +129,35 @@ public class MyRichClient {
         }
 
         return ws;
+    }
+
+    public void sendMessage(final String message) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL("http://play-yunyenwang.rhcloud.com/rick/message");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setDoOutput(true);
+                    con.setRequestProperty("Content-Type", "text/plain; charset=UTF-8");
+
+                    OutputStream os = con.getOutputStream();
+                    os.write(message.getBytes("UTF-8"));
+                    os.flush();
+
+                    con.connect();
+
+                    int sc = con.getResponseCode();
+                    if (sc != 200) {
+                        LOG.error("sc: {}, error: {}", sc, con.getResponseMessage());
+                    }
+
+                } catch (Exception e) {
+                    LOG.error("Failed to fire message", e);
+                }
+            }
+        });
+
     }
 }

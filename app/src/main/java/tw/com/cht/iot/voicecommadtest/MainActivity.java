@@ -165,6 +165,11 @@ public class MainActivity extends AppCompatActivity {
             speak("燈關掉了 有意思喔", DONE);
             client.controlLamp(false);
 
+        } else if (first.contains("訊息")) { // TODO - NG
+            String message = first.substring(first.indexOf("訊息") + 2);
+            speak("訊息送出去了 用 Line 收收看喔", DONE);
+            client.sendMessage(message);
+
         } else if (first.contains("空氣")) { // TODO - NG
             try {
                 speak(client.pir(), DONE);
