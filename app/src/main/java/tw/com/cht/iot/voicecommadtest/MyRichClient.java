@@ -3,6 +3,10 @@ package tw.com.cht.iot.voicecommadtest;
 import com.cht.iot.api.OpenRESTfulClient;
 import com.cht.iot.api.Rawdata;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,5 +163,54 @@ public class MyRichClient {
             }
         });
 
+    }
+
+    // === YouTube ===
+
+    static final String USER_AGENT = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:44.0) Gecko/20100101 Firefox/44.0";
+
+    public Trailer searchTrailer(final String keyword) throws InterruptedException {
+        final Future<Trailer> future = new Future<>();
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url = "https://www.youtube.com/results";
+
+                    Document doc = Jsoup.connect(url)
+                            .userAgent(USER_AGENT)
+//				.data("search_query", URLEncoder.encode(keyword, "UTF-8"))
+                            .data("search_query", keyword)
+                            .post();
+
+                    Elements es = doc.select(".yt-lockup-content");
+                    for (Element e : es) {
+                        Elements as = e.select("a");
+                        if (!as.isEmpty()) {
+                            Element a = as.first();
+
+                            Trailer t = new Trailer();
+                            t.title = a.attr("title");
+                            t.url = String.format("https://www.youtube.com%s", a.attr("href"));
+
+                            future.set(t);
+
+                            return;
+                        }
+                    }
+
+                } catch (Exception e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            }
+        });
+
+        return future.get(3000L);
+    }
+
+    public static class Trailer {
+        public String title;
+        public String url;
     }
 }

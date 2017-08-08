@@ -39,6 +39,8 @@ dependencies {
     compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.2'
 
+    compile 'org.jsoup:jsoup:1.8.3'
+
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     testCompile 'junit:junit:4.12'

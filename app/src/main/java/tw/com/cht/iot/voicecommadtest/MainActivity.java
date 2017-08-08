@@ -1,6 +1,7 @@
 package tw.com.cht.iot.voicecommadtest;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -222,6 +223,21 @@ public class MainActivity extends AppCompatActivity {
 
         } else if (first.contains("美女")) {
             speak("謝謝你的讚美 我是永遠的二十歲啊", DONE);
+
+        } else if (first.contains("看")) {
+            String keyword = first.substring(first.indexOf("看"));
+            try {
+                MyRichClient.Trailer t = client.searchTrailer(keyword);
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(t.url));
+                startActivity(intent);
+
+            } catch (Exception e) {
+                LOG.error("Failed to search", e);
+            }
+
+            finish();
 
         } else {
             String[] errors = new String[] { "不好意思 沒聽懂 再講一次好嗎", "你口音怪怪的", "這個問題很難回答", "糟糕我幫不了你", "啥 人家聽不懂啦", "瞎咪挖溝 可以再說一次嗎", "我的老天鵝阿 你在說什麼" };
